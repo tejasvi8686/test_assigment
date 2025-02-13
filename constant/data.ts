@@ -1,34 +1,32 @@
 import { BG1, BG2, BG3, BG4, Slider1, Slider2, Slider3, Slider4 } from "@/assets";
 
-export const HeroSectionSlider = [
+
+
+  export const HeroSectionSlider = [
     {
-      id: 1,
-      image: BG1,
-      press: BG2,
       title: "Welcome To TenTwenty Farms",
-      description: "From our Farms to your hands",
+      description: "From Our Farms\nTo Your Hands",
+      image: BG1,
+      press: BG2
     },
     {
-      id: 2,
+      title: "Sustainable Agriculture",
+      description: "Growing Tomorrow's\nFood Today",
       image: BG2,
-      press: BG3,
-      title: "Our Farms",
-      description: "We grow a variety of fruits and vegetables in our farms",
+      press: BG3
     },
     {
-      id: 3,
+      title: "Organic Farming",
+      description: "Nature's Best\nDelivered Fresh",
       image: BG3,
-      press: BG4,
-      title: "Our Products",
-      description: "We offer a variety of products from our farms",
+      press: BG4
     },
     {
-      id: 4,
+      title: "Farm to Table",
+      description: "Quality Food\nFor Your Family",
       image: BG4,
-      press: BG1,
-      title: "Our Services",
-      description: "We offer a variety of services to our customers",
-    },
+      press: BG1
+    }
   ];
 
 

@@ -1,10 +1,23 @@
-import HeroSection from "@/component/Herosection";
+import HeroSection from "@/components/Herosection";
+import Navbar from "@/components/Navbar";
+import Product from "@/components/Product";
+import { HeroSectionSlider, Products } from "@/constant/data";
+
 
 
 export default function Home() {
   return (
     <main>
-      <HeroSection />
+      <Navbar />
+      <HeroSection
+        slides={HeroSectionSlider}
+        transitionDuration={500}
+        autoPlayInterval={4000}
+        progressSpeed={40}
+        overlayColor="bg-black/50"
+        nextText="Next Slide"
+      />
+      <Product  />
     </main>
   );
 }
