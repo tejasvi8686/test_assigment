@@ -5,14 +5,14 @@ import Image from "next/image";
 import { HeroSectionSlider } from "@/constant/data";
 
 interface Slide {
-  image: string;
+  image?: string;
   title: string;
   description: string;
-  press: string;
+  press?: string;
 }
 
 interface HeroSectionProps {
-  slides: Slide[];
+  slides?: Slide[];
   transitionDuration?: number;
   autoPlayInterval?: number;
   progressSpeed?: number;

@@ -8,7 +8,7 @@ export default function Home() {
     <main>
       <Navbar />
       <HeroSection
-        slides={HeroSectionSlider}
+        slides={HeroSectionSlider as Slide[]}
         transitionDuration={500}
         autoPlayInterval={4000}
         progressSpeed={40}
