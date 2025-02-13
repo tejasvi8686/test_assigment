@@ -1,14 +1,15 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
 import AnimatedText from "./AnimatedText";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { HeroSectionSlider } from "@/constant/data";
 
+// Update the Slide interface to accept StaticImageData
 interface Slide {
-  image?: string;
   title: string;
   description: string;
-  press?: string;
+  image: StaticImageData | string; // Allow both types
+  press: StaticImageData;
 }
 
 interface HeroSectionProps {
