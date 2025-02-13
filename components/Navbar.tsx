@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const Navbar = () => {
   return (
-    <header className="flex sm:py-[32px] py-[24px] fixed bg-white z-20 top-0 left-0 right-0 mx-auto sm:w-[97%] w-full sm:pl-[39px] px-[24px] sm:pr-[33px] sm:mt-[21px] mt-[0px]">
+    <header className="flex sm:py-[32px] py-[24px] absolute bg-white z-20 top-0 left-0 right-0 mx-auto sm:w-[97%] w-full sm:pl-[39px] px-[24px] sm:pr-[33px] sm:mt-[21px] mt-[0px]">
       <main className="flex sm:flex-row flex-row-reverse justify-between items-center w-full">
         <div className="md:hidden">
           <Image
