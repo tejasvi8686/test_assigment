@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
+import React, { useState, useRef, useEffect, RefObject } from "react";
+import Image, { StaticImageData } from "next/image";
 
-const getDistanceFromCenter = (element) => {
+const getDistanceFromCenter = (element: HTMLElement) => {
   const rect = element.getBoundingClientRect();
   const center = {
     x: rect.left + rect.width / 2,
@@ -17,16 +17,23 @@ const getDistanceFromCenter = (element) => {
   return distance;
 };
 
-const ProductSlider = ({ clients }) => {
-  const [index, setIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+interface Client {
+  id: number;
+  name?: string;
+  location?: string;
+  images?: StaticImageData;
+}
 
-  const [slidesRefs, setSlidesRefs] = useState([]);
-  const [activeSlide, setActiveSlide] = useState(null);
-  const sliderRef = useRef(null);
-  const sliderInnerRef = useRef(null);
+const ProductSlider = ({ clients }: { clients: Client[] }) => {
+  const [index, setIndex] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [startX, setStartX] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  const [slidesRefs, setSlidesRefs] = useState<RefObject<HTMLDivElement>[]>([]);
+  const [activeSlide, setActiveSlide] = useState<HTMLElement | null>(null);
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const sliderInnerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (window.innerWidth < 767) {
@@ -35,36 +42,33 @@ const ProductSlider = ({ clients }) => {
 
     setSlidesRefs((slidesRefs) =>
       Array(clients.length)
-        .fill()
-        .map((_, i) => slidesRefs[i] || React.createRef())
+        .fill(null)
+        .map((_, i) => slidesRefs[i] || React.createRef<HTMLDivElement>())
     );
     setStartX(1);
-  }, []);
+  }, [clients.length]);
 
   useEffect(() => {
     updateSlider();
-    return () => {};
   }, [startX]);
 
   useEffect(() => {
     if (!isDragging && activeSlide) {
       scrollToCenter();
     }
-    return () => {};
-  }, [isDragging]);
+  }, [isDragging, activeSlide]);
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
-    setStartX(e.pageX - sliderRef.current?.offsetLeft || 0);
+    setStartX(e.pageX - (sliderRef.current?.offsetLeft || 0));
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isDragging) {
-      const newX = e.pageX - sliderRef.current?.offsetLeft || 0;
+      const newX = e.pageX - (sliderRef.current?.offsetLeft || 0);
       const diffX = newX - startX;
       if (sliderRef.current) {
-       
-        sliderRef.current.scrollLeft -= diffX; 
+        sliderRef.current.scrollLeft -= diffX;
       }
       setStartX(newX);
     }
@@ -78,7 +82,7 @@ const ProductSlider = ({ clients }) => {
     const sliderWidth = sliderRef.current?.clientWidth || 0;
     const slideWidth = sliderWidth / 3;
     const sliderInner = sliderInnerRef.current;
-    let newActiveSlideIndex = null;
+    let newActiveSlideIndex: number | null = null;
 
     slidesRefs.forEach((slide, index) => {
       const slideElement = slide.current;
@@ -100,7 +104,7 @@ const ProductSlider = ({ clients }) => {
           rotate = -rotate;
         }
 
-        slideElement.style = `rotate:${rotate}deg; transform:translateY(${y}px);`;
+        slideElement.style.transform = `rotate(${rotate}deg) translateY(${y}px)`;
 
         if (slideCenter > rangeStart && slideCenter < rangeEnd) {
           newActiveSlideIndex = index;
@@ -113,18 +117,19 @@ const ProductSlider = ({ clients }) => {
 
     sliderInner
       ?.querySelector(
-        `.slide.active:not(:nth-child(${newActiveSlideIndex + 1}))`
+        `.slide.active:not(:nth-child(${(newActiveSlideIndex || 0) + 1}))`
       )
       ?.classList?.remove("active");
   };
 
   const scrollToCenter = () => {
+    if (!activeSlide) return;
+
     let distance = getDistanceFromCenter(activeSlide);
-    const rect = activeSlide?.getBoundingClientRect();
-    const slideCenter = rect?.left + rect.width / 2;
-    if (slideCenter < window.innerWidth / 2) {
-      distance = -distance;
-    }
+    const rect = activeSlide.getBoundingClientRect();
+    const slideCenter = rect.left + rect.width / 2;
+    if (slideCenter < window.innerWidth / 2) distance = -distance;
+
     if (distance !== 0) {
       setTimeout(() => {
         sliderRef.current?.scrollBy({
@@ -140,7 +145,7 @@ const ProductSlider = ({ clients }) => {
   };
 
   return (
-    <div className=" w-full  bg-white">
+    <div className="w-full bg-white">
       <div className="flex flex-col items-center justify-center">
         <p className="text-black font-light sm:text-[56px] text-[32px] mt-[80px] sm:mb-[40px] mb-[20px]">
           Quality Products
@@ -154,16 +159,16 @@ const ProductSlider = ({ clients }) => {
       </div>
 
       <div
-        className="product-slider flex overflow-x-auto h-screen"
         ref={sliderRef}
         onScroll={handleScroll}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        className="flex overflow-x-auto h-screen"
       >
         <div
-          className="slider-inner flex justify-center items-center gap-x-24 "
           ref={sliderInnerRef}
+          className="flex justify-center items-center gap-x-24"
         >
           <div className="slide empty w-[250px] h-[400px] flex-shrink-0"></div>
           {clients.map((client, i) => (
@@ -173,19 +178,23 @@ const ProductSlider = ({ clients }) => {
               className="slide w-[434px] h-[619px] flex-shrink-0 relative mx-4"
             >
               <Image
-                src={client?.image}
+                src={client.images || ""    }
                 alt={`Image ${i}`}
-                className={`w-full h-full object-cover` }
+                className="w-full h-full object-cover"
               />
               <button
-                className={`absolute top-2/4 left-2/4 h-[100px] w-[100px] transform -translate-x-2/4 -translate-y-2/4 bg-white text-black rounded-full px-4 py-2  ${
+                className={`absolute top-2/4 left-2/4 h-[100px] w-[100px] transform -translate-x-2/4 -translate-y-2/4 bg-white text-black rounded-full px-4 py-2 ${
                   isDragging ? "hidden" : "block"
                 }`}
               >
                 Drag
               </button>
-              <h3 className="text-center mt-4 text-[#000000] text-[36p] font-[400] ">{client.name}</h3>
-              <p className="text-center text-[#7A7777] text-[24px] font-[400] ">{client.location}</p>
+              <h3 className="text-center mt-4 text-[#000000] text-[36px] font-[400]">
+                {client.name}
+              </h3>
+              <p className="text-center text-[#7A7777] text-[24px] font-[400]">
+                {client.location}
+              </p>
             </div>
           ))}
           <div className="slide empty w-[250px] h-[400px] flex-shrink-0"></div>

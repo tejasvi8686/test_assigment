@@ -39,13 +39,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
     setIsTransitioning(true);
     setProgress(0);
-    const nextIndex = (currentIndex + 1) % slides.length;
+    const nextIndex = (currentIndex + 1) % (slides?.length || 0);
 
     setTimeout(() => {
       setCurrentIndex(nextIndex);
       setIsTransitioning(false);
     }, transitionDuration);
-  }, [currentIndex, isTransitioning, slides.length, transitionDuration]);
+  }, [currentIndex, isTransitioning, slides?.length, transitionDuration]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -83,7 +83,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         }`}
       >
         <Image
-          src={slides[currentIndex].image}
+          src={slides?.[currentIndex]?.image || ""}
           alt={`Slide ${currentIndex + 1}`}
           className="w-full h-full object-cover"
         />
@@ -104,7 +104,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
               >
                 <div className="absolute inset-0">
                   <Image
-                    src={slides[currentIndex].press}
+                    src={slides?.[currentIndex]?.press || ""}
                     alt="Next slide preview"
                     className={`w-full h-full object-cover transition-all duration-500 ${
                       isTransitioning ? "opacity-0" : "opacity-100"
@@ -138,7 +138,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                 </span>
                 <div className="w-[120px] h-[2px] bg-white/50" />
                 <span className="text-white text-base font-light">
-                  {formatNumber(slides.length)}
+                  {formatNumber(slides?.length || 0)}
                 </span>
               </div>
             </div>

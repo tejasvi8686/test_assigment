@@ -9,6 +9,7 @@ export default function Home() {
       <Navbar />
       <HeroSection
         slides={HeroSectionSlider}
+        transitionDuration={500}
         autoPlayInterval={4000}
         progressSpeed={40}
         overlayColor="bg-black/50"
