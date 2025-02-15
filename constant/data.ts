@@ -9,14 +9,8 @@ import {
   Slider4,
 } from "@/assets";
 import { StaticImageData } from "next/image";
-interface SliderItem {
-  image: StaticImageData;
-  thumbImg: StaticImageData;
-  title1: string;
-  title2: string;
-  text: string;
-}
-export const HeroSectionSlider: SliderItem[] = [
+
+export const HeroSectionSlider = [
   {
     image: BG1,
     thumbImg: BG2,
@@ -47,14 +41,9 @@ export const HeroSectionSlider: SliderItem[] = [
   },
 ];
 
-interface ProductItem {
-  id: number;
-  title: string;
-  location: string;
-  sliderImage: StaticImageData;
-}
 
-export const Products: ProductItem[] = [
+
+export const Products = [
   {
     id: 1,
     title: "Client 1",

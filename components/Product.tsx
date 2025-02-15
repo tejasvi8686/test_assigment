@@ -105,13 +105,17 @@ export default function Product({ clients }: ProductProps) {
       onPointerLeave={handlePointerUp}
       onScroll={handleScroll}
     >
-      <div className="flex gap-24 md:gap-32 items-center px-[30vw]">
+      <div className="flex gap-24 md:gap-32 items-center  ">
         <div className="shrink-0 w-[300px] md:w-[400px] opacity-0" />
 
         {clients.map((client, i) => (
           <div
             key={client.id}
-            ref={(el) => (slideRefs.current[i] = el)}
+            ref={(el) => {
+              if (el) {
+                slideRefs.current[i] = el;
+              }
+            }}
             className="shrink-0 w-[300px] md:w-[400px] transition-transform duration-300 ease-out cursor-grab active:cursor-grabbing"
           >
             <div className="relative">
