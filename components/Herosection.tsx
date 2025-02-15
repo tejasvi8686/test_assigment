@@ -32,11 +32,11 @@ export default function HeroSection({ items }: HeroSectionProps): ReactElement {
 
   const handleNext = (): void => {
     if (isTransitioning) return;
-    
+
     setIsTransitioning(true);
     setCurrentIndx((prev) => (prev + 1 < length ? prev + 1 : 0));
     setDistance(0);
-    
+
     setTimeout(() => {
       setIsTransitioning(false);
     }, 1000);
@@ -45,14 +45,22 @@ export default function HeroSection({ items }: HeroSectionProps): ReactElement {
   return (
     <section className="relative h-screen max-h-[902px] flex items-center bg-cover bg-no-repeat overflow-hidden">
       <div className="absolute inset-0 -z-10 transition-opacity duration-1000 ease-linear">
+      {items.map((item, index) => (
         <Image
-          src={items[currentIndx].image}
-          alt="Background"
+          key={index}
+          src={item.image || "/placeholder.svg"}
+          alt={`Slide ${index + 1}`}
           fill
-          className={`object-cover image-slide ${!isTransitioning ? 'active' : ' transition-opacity duration-1000 ease-linear'}`}
+          className={`
+            object-cover
+            transition-all duration-1000 ease-in-out
+            ${index === currentIndx ? "opacity-100 scale-105 transition-opacity duration-1000 ease-linear" : "opacity-0 scale-100 transition-opacity duration-1000 ease-linear"}
+            ${isTransitioning ? "transition-opacity transition-transform" : ""}
+          `}
           quality={100}
-          priority
+          priority={index === currentIndx}
         />
+      ))} 
       </div>
 
       <div className="w-full max-w-[80%] mx-auto flex flex-wrap justify-between h-full">
@@ -60,22 +68,24 @@ export default function HeroSection({ items }: HeroSectionProps): ReactElement {
         <header className="w-full flex items-center flex-wrap min-h-[250px] pt-[110px] md:pt-0">
           <h1 className="w-full text-[#EEF4F9] text-5xl sm:font-semibold font-medium md:text-[46px] md:leading-[46px] md:max-w-[600px]">
             <label className="block w-full text-base text-[#EEF4F9] leading-6 mb-6 md:text-sm">
-              <AnimatedText 
-                text={items[currentIndx].text} 
+              <AnimatedText
+                text={items[currentIndx].text}
                 key={`text-${currentIndx}`}
                 isStart={!isTransitioning}
+                initialDelay={0}
               />
             </label>
-            <AnimatedText 
-              text={items[currentIndx].title1} 
+            <AnimatedText
+              text={items[currentIndx].title1}
               key={`title1-${currentIndx}`}
               isStart={!isTransitioning}
+              initialDelay={0}
             />
             <br />
-            <AnimatedText 
-              text={items[currentIndx].title2} 
+            <AnimatedText
+              text={items[currentIndx].title2}
               key={`title2-${currentIndx}`}
-              initialDelay={0.5}
+              initialDelay={0.2}
               isStart={!isTransitioning}
             />
           </h1>
