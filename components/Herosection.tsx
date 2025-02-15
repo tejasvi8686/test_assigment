@@ -1,152 +1,104 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import { useEffect, useState, ReactElement } from "react";
 import AnimatedText from "./AnimatedText";
-import Image, { StaticImageData } from "next/image";
-import { HeroSectionSlider } from "@/constant/data";
-
-// Update the Slide interface to accept StaticImageData
-interface Slide {
-  title: string;
-  description: string;
-  image: StaticImageData | string; // Allow both types
-  press: StaticImageData;
+import Image from "next/image";
+interface SliderItem {
+  image: string;
+  text: string;
+  title1: string;
+  title2: string;
+  thumbImg: string;
 }
 
 interface HeroSectionProps {
-  slides?: Slide[];
-  transitionDuration?: number;
-  autoPlayInterval?: number;
-  progressSpeed?: number;
-  overlayColor?: string;
-  nextText?: string;
+  items: SliderItem[];
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({
-  slides,
-  transitionDuration = 500,
-  autoPlayInterval = 4000,
-  progressSpeed = 40,
-  overlayColor = "bg-black/30",
-  nextText = "Next",
-}) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [borderPosition, setBorderPosition] = useState("top-left");
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [progress, setProgress] = useState(0);
-
-  const nextSlide = useCallback(() => {
-    if (isTransitioning) return;
-
-    setIsTransitioning(true);
-    setProgress(0);
-    const nextIndex = (currentIndex + 1) % (slides?.length || 0);
-
-    setTimeout(() => {
-      setCurrentIndex(nextIndex);
-      setIsTransitioning(false);
-    }, transitionDuration);
-  }, [currentIndex, isTransitioning, slides?.length, transitionDuration]);
+export default function HeroSection({ items }: HeroSectionProps): ReactElement {
+  const [currentIndx, setCurrentIndx] = useState<number>(0);
+  const [distance, setDistance] = useState<number>(0);
+  const length: number = items.length;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          nextSlide();
-          return 0;
-        }
-        return prev + 1;
-      });
-    }, progressSpeed);
+    const interval =
+      distance < 200
+        ? setInterval(() => setDistance((prev) => prev + 3), 50)
+        : handleNext();
 
     return () => clearInterval(interval);
-  }, [nextSlide, progressSpeed]);
+  }, [distance]);
 
-  useEffect(() => {
-    const positions = ["top-left", "top-right", "bottom-right", "bottom-left"];
-    let index = 0;
-
-    const interval = setInterval(() => {
-      setBorderPosition(positions[index]);
-      index = (index + 1) % positions.length;
-    }, autoPlayInterval);
-
-    return () => clearInterval(interval);
-  }, [autoPlayInterval]);
-
-  const formatNumber = (num: number) => (num < 10 ? `0${num}` : `${num}`);
+  const handleNext = (): void => {
+    setCurrentIndx((prev) => (prev + 1 < length ? prev + 1 : 0));
+    setDistance(0);
+  };
 
   return (
-    <main className="relative h-screen w-full overflow-hidden">
-      <div
-        className={`absolute inset-0 transition-all duration-${transitionDuration} ease-linear ${
-          isTransitioning ? "opacity-0 scale-105" : "opacity-100 scale-100"
-        }`}
-      >
+    <section className="relative h-screen max-h-[902px] flex items-center bg-cover bg-no-repeat transition-all duration-1000 ease-linear">
+      <div className="absolute inset-0 -z-10">
         <Image
-          src={slides?.[currentIndex]?.image || ""}
-          alt={`Slide ${currentIndex + 1}`}
-          className="w-full h-full object-cover"
+          src={items[currentIndx].image}
+          alt="Background"
+          fill
+          className="object-cover ease-linear duration-1000"
+          quality={100}
         />
       </div>
 
-      <div className={`absolute inset-0 ${overlayColor}`}>
-        <div className="container mx-auto px-4 h-full">
-          <div className="flex flex-col justify-center h-full max-w-4xl">
-            <AnimatedText
-              title={HeroSectionSlider[currentIndex].title}
-              description={HeroSectionSlider[currentIndex].description}
-              isTransitioning={isTransitioning}
+      <div className="w-full max-w-[80%] mx-auto flex flex-wrap justify-between h-full">
+        <div className="min-w-[10px]" />
+        <header className="w-full flex items-center flex-wrap min-h-[250px] pt-[110px] md:pt-0">
+          <h1 className="w-full text-[#EEF4F9] text-5xl sm:font-semibold font-medium md:text-[46px] md:leading-[46px] md:max-w-[600px]">
+            <label className="block w-full text-base text-[#EEF4F9] leading-6 mb-6 md:text-sm">
+              <AnimatedText text={items[currentIndx].text} />
+            </label>
+            <AnimatedText text={items[currentIndx].title1} />
+            <br />
+            <AnimatedText text={items[currentIndx].title2} initialDelay={0.5} />
+          </h1>
+        </header>
+        <div className="self-center flex">
+          <div
+            className="relative w-[132px] h-[132px] p-[23px] border border-[#EEF4F9] flex justify-center cursor-pointer overflow-hidden md:w-[115px] md:h-[115px]"
+            onClick={handleNext}
+            role="button"
+            tabIndex={0}
+          >
+            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#EEF4F9] md:text-sm z-10">
+              Next
+            </span>
+
+            <Image
+              src={items[currentIndx].thumbImg}
+              alt={`next-image-${currentIndx}`}
+              className="absolute inset-0 mx-auto sm:mt-4 mt-4 sm:w-20 sm:h-20 w-24 h-24 object-cover"
+              loading="lazy"
             />
-            <div className="flex items-center space-x-8">
-              <div
-                className="relative w-40 h-40 md:w-[120px] md:h-[120px] group cursor-pointer"
-                onClick={nextSlide}
-              >
-                <div className="absolute inset-0">
-                  <Image
-                    src={slides?.[currentIndex]?.press || ""}
-                    alt="Next slide preview"
-                    className={`w-full h-full object-cover transition-all duration-500 ${
-                      isTransitioning ? "opacity-0" : "opacity-100"
-                    }`}
-                  />
-                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <span className="text-white text-lg font-medium tracking-wider">
-                      {nextText}
-                    </span>
-                  </div>
-                </div>
 
-                <div className="absolute inset-0">
-                  <div
-                    className={`absolute transition-all duration-${transitionDuration} ease-linear ${
-                      borderPosition === "top-left"
-                        ? "border-t-[1px] border-l-[1px]"
-                        : borderPosition === "top-right"
-                        ? "border-t-[1px] border-r-[1px]"
-                        : borderPosition === "bottom-right"
-                        ? "border-b-[1px] border-r-[1px]"
-                        : "border-b-[1px] border-l-[1px]"
-                    } border-white w-full h-full`}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <span className="text-white text-base font-light">
-                  {formatNumber(currentIndex + 1)}
-                </span>
-                <div className="w-[120px] h-[2px] bg-white/50" />
-                <span className="text-white text-base font-light">
-                  {formatNumber(slides?.length || 0)}
-                </span>
-              </div>
-            </div>
+            <div
+              className="absolute top-0 right-0 h-[10px] bg-white"
+              style={{ width: `${distance}%` }}
+            />
+            <div
+              className="absolute top-0 right-0 w-[10px] bg-white"
+              style={{ height: `${distance}%` }}
+            />
+            <div
+              className="absolute bottom-0 right-0 h-[10px] bg-white"
+              style={{ width: `${distance > 100 ? distance - 100 : 0}%` }}
+            />
+            <div
+              className="absolute bottom-0 left-0 w-[10px] bg-white"
+              style={{ height: `${distance > 100 ? distance - 100 : 0}%` }}
+            />
+          </div>
+          <div className="text-[#EEF4F9] flex gap-2.5 ml-8 items-center md:ml-6">
+            <span className="text-sm">0{currentIndx + 1}</span>
+            <div className="bg-[#EEF4F9] h-px w-[103px] mt-2 md:mt-0" />
+            <span className="text-sm">0{length}</span>
           </div>
         </div>
       </div>
-    </main>
+    </section>
   );
-};
-
-export default HeroSection;
+}

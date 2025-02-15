@@ -21,7 +21,7 @@ const Navbar = () => {
             <Link
               href={item.link}
               key={item.id}
-              className="text-black font-[400] text-[14px]"
+              className="text-black font-[500] text-[14px]"
             >
               {item.name}
             </Link>

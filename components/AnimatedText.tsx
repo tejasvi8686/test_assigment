@@ -1,30 +1,37 @@
-import React from "react";
+"use client";
+import { useEffect, useState, ReactElement } from "react";
 
 interface AnimatedTextProps {
-  title: string;
-  description: string;
-  isTransitioning: boolean;
+  text?: string;
+  initialDelay?: number;
+  increasedDelay?: number;
+  isStart?: boolean;
 }
 
-const AnimatedText: React.FC<AnimatedTextProps> = ({
-  title,
-  description,
-  isTransitioning,
-}) => {
-  return (
-    <div
-      className={`space-y-4 mb-12 transition-all duration-500 ${
-        isTransitioning ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0"
-      }`}
-    >
-      <p className="text-white text-lg md:text-xl font-light tracking-wide">
-        {title}
-      </p>
-      <h1 className="text-white text-4xl md:text-6xl lg:text-7xl font-light leading-tight whitespace-pre-line">
-        {description}
-      </h1>
-    </div>
-  );
-};
+export default function AnimatedText({
+  text = "",
+  initialDelay = 0,
+  increasedDelay = 0.2,
+  isStart = true,
+}: AnimatedTextProps): ReactElement {
+  const [finalText, setFinalText] = useState<ReactElement[]>([]);
 
-export default AnimatedText;
+  useEffect(() => {
+    if (isStart && text) {
+      const textArr = text.split(" ").map((word, i) => (
+        <span
+          key={i}
+          className="word"
+          style={{
+            animationDelay: `${initialDelay + (i + 1) * increasedDelay}s`,
+          }}
+        >
+          {word}
+        </span>
+      ));
+      setFinalText(textArr);
+    }
+  }, [isStart, text, initialDelay, increasedDelay]);
+
+  return <div className="inline-block sm:mb-4 mb-2">{finalText}</div>;
+}

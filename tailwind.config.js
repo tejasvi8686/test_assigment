@@ -17,6 +17,19 @@ module.exports = {
           '100%': { width: '100%', height: '100%' },
         },
       },
+     spacing: {
+        '100px': '100px',
+        '44%': '44%',
+      },
+      translate: {
+        '44%': '44%',
+      },
+      maxWidth: {
+        '434px': '434px',
+      },
+      maxHeight: {
+        '620px': '620px',
+      }
     },
   },
   plugins: [],
