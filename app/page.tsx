@@ -34,7 +34,7 @@ export default function Home() {
         ref={prodcutsRef}
         className="py-10 px-4 max-w-7xl mx-auto text-center "
       >
-        <h2 className="text-black font-[600] sm:text-[56px] text-[32px] mt-[80px] sm:mb-[40px] mb-[20px]">
+        <h2 className="text-black font-[400] sm:text-[56px] text-[32px] mt-[80px] sm:mb-[40px] mb-[20px]">
           <AnimatedText
             text="Quality Products"
             initialDelay={0}

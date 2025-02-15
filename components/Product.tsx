@@ -98,7 +98,7 @@ export default function Product({ clients }: ProductProps) {
   return (
     <div
       ref={sliderRef}
-      className="relative w-full overflow-x-scroll hide-scrollbar touch-none pt-20 pb-8 px-4"
+      className="relative w-full overflow-x-scroll overflow-y-hidden hide-scrollbar touch-none pt-20 pb-20 px-4"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
